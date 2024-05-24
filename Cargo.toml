@@ -1,0 +1,24 @@
+[package]
+name = "line-count"
+version = "0.1.0"
+edition = "2021"
+authors = ["cqb13 <cqb13.dev@gmail.com>"]
+license = "MIT"
+description = "A CLI tool for counting the lines in files."
+readme = "./README.md"
+homepage = "https://github.com/cqb13/line-count"
+repository = "https://github.com/cqb13/line-count"
+keywords = ["cli", "line-count", "file-count"]
+categories = ["command-line-utilities"]
+exclude = [
+	".gitignore",
+	".github/*"
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[[bin]]
+name = "lc"
+path = "src/main.rs"
