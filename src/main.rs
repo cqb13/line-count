@@ -1,8 +1,11 @@
 pub mod cli;
+pub mod commands;
 pub mod utils;
 
 use crate::cli::{Arg, Cli, Command};
-use crate::utils::{install, validate_and_convert_path, OS};
+use crate::commands::count::count_command;
+use crate::commands::install::install_command;
+use crate::utils::{get_current_directory_path, validate_and_convert_path, OS};
 
 fn main() {
     let cli = Cli::new().with_default_command("help").with_commands(vec![
@@ -55,18 +58,28 @@ fn main() {
                 _ => panic!("Unsupported OS"),
             };
 
-            install(&os);
+            install_command(&os);
         }
         "help" => cli.help(),
         "count" => {
-            /*
-            x lines in y files
+            let path = command.get_value_of("path").to_option();
+            let files = command.get_value_of("files").throw_if_none();
+            let single_directory = command.has("single-directory");
+            let detailed = command.has("detailed");
 
-            x ".rs" files
-                y lines
-            z ".py" files
-                q lines
-             */
+            let path = match path {
+                Some(path) => validate_and_convert_path(path),
+                None => validate_and_convert_path(get_current_directory_path()),
+            };
+
+            let path = match path {
+                Ok(path) => path,
+                Err(error) => panic!("{}", error),
+            };
+
+            let files: Vec<&str> = files.split(",").collect();
+
+            count_command(path, files, single_directory, detailed)
         }
         _ => cli.help(),
     }
