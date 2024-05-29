@@ -2,6 +2,9 @@ pub mod cli;
 pub mod commands;
 pub mod utils;
 
+use std::collections::HashMap;
+use std::ffi::OsString;
+
 use crate::cli::{Arg, Cli, Command};
 use crate::commands::count::count_command;
 use crate::commands::install::install_command;
@@ -63,7 +66,7 @@ fn main() {
         "help" => cli.help(),
         "count" => {
             let path = command.get_value_of("path").to_option();
-            let files = command.get_value_of("files").throw_if_none();
+            let files = command.get_value_of("files").to_option();
             let single_directory = command.has("single-directory");
             let detailed = command.has("detailed");
 
@@ -77,10 +80,41 @@ fn main() {
                 Err(error) => panic!("{}", error),
             };
 
-            let files: Vec<&str> = files.split(",").collect();
+            if !path.is_file() && files.is_none() {
+                panic!("If the path is not a file you must provide file extensions")
+            }
 
-            count_command(path, files, single_directory, detailed)
+            if path.is_file() && files.is_some() {
+                println!("The path you provided goes to a file, but you also provided file extensions, only the file at the path will be scanned");
+            }
+
+            let files: Vec<String> = match files {
+                Some(file_list) => file_list.split(",").map(|s| s.to_string()).collect(),
+                None => Vec::new(),
+            };
+
+            let count_result = count_command(path, files, single_directory, detailed);
+            display_count_results(count_result)
         }
         _ => cli.help(),
+    }
+}
+
+fn display_count_results(count_result: HashMap<OsString, Vec<i32>>) {
+    let elements: Vec<(&OsString, &Vec<i32>)> = count_result.iter().collect();
+
+    for (file_ending, lines) in elements.iter() {
+        let mut total_lines = 0;
+
+        for file_lines in lines.iter() {
+            total_lines += file_lines;
+        }
+
+        println!(
+            "\"{}\" files have {} lines across {} files",
+            file_ending.to_string_lossy(),
+            total_lines,
+            lines.len()
+        );
     }
 }
