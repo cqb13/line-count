@@ -30,7 +30,7 @@ fn main() {
                     .with_short('f')
                     .with_long("files")
                     .with_value_name("FILES")
-                    .with_help("The files to count lines in (.rs,.py,.java,etc...)"),
+                    .with_help("The files to count lines in (rs,py,java,etc...)"),
             )
             .with_arg(
                 Arg::new()
@@ -93,7 +93,7 @@ fn main() {
                 None => Vec::new(),
             };
 
-            let count_result = count_command(path, files, single_directory, detailed);
+            let count_result = count_command(path, files, single_directory);
             display_count_results(count_result)
         }
         _ => cli.help(),
