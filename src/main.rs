@@ -94,27 +94,42 @@ fn main() {
             };
 
             let count_result = count_command(path, files, single_directory);
-            display_count_results(count_result)
+            display_count_results(count_result, detailed)
         }
         _ => cli.help(),
     }
 }
 
-fn display_count_results(count_result: HashMap<OsString, Vec<i32>>) {
+fn display_count_results(count_result: HashMap<OsString, Vec<i32>>, detailed: bool) {
     let elements: Vec<(&OsString, &Vec<i32>)> = count_result.iter().collect();
 
-    for (file_ending, lines) in elements.iter() {
-        let mut total_lines = 0;
+    if detailed {
+        for (file_ending, lines) in elements.iter() {
+            let mut total_lines = 0;
 
-        for file_lines in lines.iter() {
-            total_lines += file_lines;
+            for file_lines in lines.iter() {
+                total_lines += file_lines;
+            }
+
+            println!(
+                "\"{}\" files have {} lines across {} files",
+                file_ending.to_string_lossy(),
+                total_lines,
+                lines.len()
+            );
+        }
+    } else {
+        let mut total_lines = 0;
+        let mut files = 0;
+
+        for (_, lines) in elements.iter() {
+            files += lines.len();
+
+            for file_lines in lines.iter() {
+                total_lines += file_lines;
+            }
         }
 
-        println!(
-            "\"{}\" files have {} lines across {} files",
-            file_ending.to_string_lossy(),
-            total_lines,
-            lines.len()
-        );
+        println!("{} lines across {} files", total_lines, files);
     }
 }
