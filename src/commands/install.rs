@@ -9,7 +9,7 @@ pub fn install_command(os: &OS) {
 
     let home_dir = get_user_home_dir(os);
     let bin_path = match os {
-        OS::Windows => "AppData/Roaming/gstats",
+        OS::Windows => "AppData/Roaming/lc",
         OS::Mac => ".local/bin",
     };
 
@@ -22,8 +22,8 @@ pub fn install_command(os: &OS) {
     }
 
     let binary_name = match os {
-        OS::Windows => "gstats.exe",
-        OS::Mac => "gstats",
+        OS::Windows => "lc.exe",
+        OS::Mac => "lc",
     };
 
     let new_binary_path = format!("{}/{}", local_bin_path, binary_name);
