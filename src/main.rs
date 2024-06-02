@@ -11,7 +11,10 @@ use crate::commands::install::install_command;
 use crate::utils::{get_current_directory_path, validate_and_convert_path, OS};
 
 fn main() {
-    let cli = Cli::new().with_default_command("help").with_commands(vec![
+    let cli = Cli::new()
+        .with_default_command("help")
+        .with_bin("lc")
+        .with_commands(vec![
         Command::new("version", "Displays the current version of github-stats").with_short('v'),
         Command::new("install", "Installs the files and directories"),
         Command::new("help", "Displays the help message").with_short('h'),

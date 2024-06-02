@@ -21,6 +21,7 @@ pub struct Command<'a> {
 
 pub struct Cli<'a> {
     pub name: String,
+    pub bin: String,
     pub description: String,
     pub author: String,
     pub github: String,
@@ -213,6 +214,7 @@ impl<'a> Cli<'a> {
     pub fn new() -> Cli<'a> {
         Cli {
             name: env!("CARGO_PKG_NAME").to_string(),
+            bin: env!("CARGO_PKG_NAME").to_string(),
             description: env!("CARGO_PKG_DESCRIPTION").to_string(),
             author: env!("CARGO_PKG_AUTHORS").to_string(),
             github: env!("CARGO_PKG_REPOSITORY").to_string(),
@@ -224,6 +226,11 @@ impl<'a> Cli<'a> {
 
     pub fn with_name(mut self, name: &'a str) -> Cli<'a> {
         self.name = name.to_string();
+        self
+    }
+
+    pub fn with_bin(mut self, bin: &'a str) -> Cli<'a> {
+        self.bin = bin.to_string();
         self
     }
 
@@ -317,7 +324,7 @@ impl<'a> Cli<'a> {
         println!("Github: {}", self.github);
         println!();
         println!("USAGE:");
-        println!("    {} [COMMAND] [OPTIONS]", self.name);
+        println!("    {} [COMMAND] [OPTIONS]", self.bin);
         println!();
         println!("COMMANDS:");
         for command in &self.commands {
